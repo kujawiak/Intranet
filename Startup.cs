@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Intranet.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Intranet
 {
@@ -31,6 +33,8 @@ namespace Intranet
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddDbContext<IntranetContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("IntranetContext")));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
