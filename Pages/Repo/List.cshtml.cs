@@ -9,11 +9,11 @@ using Intranet.Models;
 
 namespace Intranet.Pages.Repo
 {
-    public class IndexModel : PageModel
+    public class ListModel : PageModel
     {
         private readonly Intranet.Models.IntranetContext _context;
 
-        public IndexModel(Intranet.Models.IntranetContext context)
+        public ListModel(Intranet.Models.IntranetContext context)
         {
             _context = context;
         }
@@ -22,10 +22,7 @@ namespace Intranet.Pages.Repo
 
         public async Task OnGetAsync()
         {
-            RepoFile = await _context.RepoFile
-                .GroupBy(a => a.GUID)
-                .Select(y => y.OrderByDescending(z => z.Version).First())
-                .ToListAsync();
+            RepoFile = await _context.RepoFile.ToListAsync();
 
         }
     }

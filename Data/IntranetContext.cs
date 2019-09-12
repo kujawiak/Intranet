@@ -10,5 +10,12 @@ namespace Intranet.Models
         }
 
         public DbSet<Intranet.Models.RepoFile> RepoFile { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<RepoFile>()
+                .HasIndex(p => new { p.Version, p.GUID })
+                .IsUnique(true);
+        }
     }
 }

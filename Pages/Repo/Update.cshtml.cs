@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Intranet.Models;
+using System.IO;
 
 namespace Intranet.Pages.Repo
 {
-    public class EditModel : PageModel
+    public class UpdateModel : PageModel
     {
         private readonly Intranet.Models.IntranetContext _context;
 
-        public EditModel(Intranet.Models.IntranetContext context)
+        public UpdateModel(Intranet.Models.IntranetContext context)
         {
             _context = context;
         }
@@ -45,22 +46,27 @@ namespace Intranet.Pages.Repo
                 return Page();
             }
 
-            _context.Attach(RepoFile).State = EntityState.Modified;
+            if (RepoFile.File.Length > 0)
+            {
+                RepoFile UpdatedFile = new RepoFile();
+                UpdatedFile.Version = RepoFile.Version+1;
+                UpdatedFile.Size = (int)RepoFile.File.Length;
+                UpdatedFile.Date = DateTime.Now;
+                UpdatedFile.GUID = RepoFile.GUID;
+                UpdatedFile.ShownName = RepoFile.ShownName;
+                var strsplit = RepoFile.File.FileName.Split(".");
+                UpdatedFile.Extension = strsplit[strsplit.Length-1];
+                UpdatedFile.Name = RepoFile.File.FileName.Replace(UpdatedFile.Extension, String.Empty);
+                var writePath = Path.Combine(Directory.GetCurrentDirectory(), "uploads", UpdatedFile.GUID.ToString());
+                if (!Directory.Exists(writePath))
+                    throw new Exception("Directory should exists.");
+                var filePath = Path.Combine(writePath, UpdatedFile.Version.ToString());
+                var fs = new FileStream(filePath, FileMode.Create);
+                RepoFile.File.CopyTo(fs);
+                fs.Close();
 
-            try
-            {
+                _context.RepoFile.Add(UpdatedFile);
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RepoFileExists(RepoFile.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
             }
 
             return RedirectToPage("./Index");

@@ -35,7 +35,7 @@ namespace Intranet.Pages.Repo
                 return NotFound();
             }
 
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "uploads", RepoFile.UUID.ToString());
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "uploads", RepoFile.GUID.ToString(), RepoFile.Version.ToString());
             Stream stream = new FileStream(filePath, FileMode.Open);
 
             if(stream == null)

@@ -10,11 +10,11 @@ using System.IO;
 
 namespace Intranet.Pages.Repo
 {
-    public class CreateModel : PageModel
+    public class UploadModel : PageModel
     {
         private readonly Intranet.Models.IntranetContext _context;
 
-        public CreateModel(Intranet.Models.IntranetContext context)
+        public UploadModel(Intranet.Models.IntranetContext context)
         {
             _context = context;
         }
@@ -36,14 +36,19 @@ namespace Intranet.Pages.Repo
 
             if (RepoFile.File.Length > 0)
             {
+                RepoFile.Version = 1;
                 RepoFile.Size = (int)RepoFile.File.Length;
-                RepoFile.UUID = Guid.NewGuid();
+                RepoFile.Date = DateTime.Now;
+                RepoFile.GUID = Guid.NewGuid();
                 if (RepoFile.ShownName == null)
                     RepoFile.ShownName = RepoFile.File.FileName;
                 var strsplit = RepoFile.File.FileName.Split(".");
                 RepoFile.Extension = strsplit[strsplit.Length-1];
-                RepoFile.Name = RepoFile.File.FileName.Replace(RepoFile.Extension, String.Empty);
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "uploads", RepoFile.UUID.ToString());
+                RepoFile.Name = RepoFile.File.FileName.Replace("."+RepoFile.Extension, String.Empty);
+                var writePath = Path.Combine(Directory.GetCurrentDirectory(), "uploads", RepoFile.GUID.ToString());
+                if (!Directory.Exists(writePath))
+                    Directory.CreateDirectory(writePath);
+                var filePath = Path.Combine(writePath, RepoFile.Version.ToString());
                 var fs = new FileStream(filePath, FileMode.Create);
                 RepoFile.File.CopyTo(fs);
                 fs.Close();
