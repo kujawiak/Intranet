@@ -21,7 +21,7 @@ namespace Intranet.Models
         }
         [Display(Name = "Nazwa wyświetlana")]
         public string ShownName { get; set; }
-        public string Location { get; set; }
+        public RepoDir Dir { get; set; }
         [Display(Name = "Rozmiar")]
         public int Size { get; set; }
         [NotMappedAttribute]
