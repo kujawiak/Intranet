@@ -25,6 +25,8 @@
             <div class="form-group">
                 <input asp-for="RepoFile.Version" type="hidden" />
                 <input asp-for="RepoFile.GUID" type="hidden" />
+                <input asp-for="RepoFile.RepoDir.Id" type="hidden" />
+                <input asp-for="RepoFile.Id" type="hidden" />
                 <input type="submit" value="Upload" class="btn btn-primary" />
             </div>
         </form>

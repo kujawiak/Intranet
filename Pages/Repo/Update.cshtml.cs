@@ -30,7 +30,7 @@ namespace Intranet.Pages.Repo
                 return NotFound();
             }
 
-            RepoFile = await _context.RepoFile.FirstOrDefaultAsync(m => m.Id == id);
+            RepoFile = await _context.RepoFile.Include("RepoDir").FirstOrDefaultAsync(m => m.Id == id);
 
             if (RepoFile == null)
             {
@@ -45,6 +45,7 @@ namespace Intranet.Pages.Repo
             {
                 return Page();
             }
+            var repoDir = await _context.RepoDir.FirstOrDefaultAsync(a => a.Id == RepoFile.RepoDir.Id);
 
             if (RepoFile.File.Length > 0)
             {
@@ -54,6 +55,7 @@ namespace Intranet.Pages.Repo
                 UpdatedFile.Date = DateTime.Now;
                 UpdatedFile.GUID = RepoFile.GUID;
                 UpdatedFile.ShownName = RepoFile.ShownName;
+                UpdatedFile.RepoDir = repoDir;
                 var strsplit = RepoFile.File.FileName.Split(".");
                 UpdatedFile.Extension = strsplit[strsplit.Length-1];
                 UpdatedFile.Name = RepoFile.File.FileName.Replace(UpdatedFile.Extension, String.Empty);

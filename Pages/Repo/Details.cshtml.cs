@@ -27,7 +27,7 @@ namespace Intranet.Pages.Repo
                 return NotFound();
             }
 
-            RepoFile = await _context.RepoFile.FirstOrDefaultAsync(m => m.Id == id);
+            RepoFile = await _context.RepoFile.Include("RepoDir").FirstOrDefaultAsync(m => m.Id == id);
 
             if (RepoFile == null)
             {

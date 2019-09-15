@@ -20,13 +20,13 @@ namespace Intranet.Pages.Repo
 
         public IList<RepoFile> RepoFile { get;set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? id = 100)
         {
             RepoFile = await _context.RepoFile
+                .Where(a => a.RepoDir.Id == id)
                 .GroupBy(a => a.GUID)
-                .Select(y => y.OrderByDescending(z => z.Version).First())
+                .Select(y => y.OrderBy(z => z.Version).Last())
                 .ToListAsync();
-
         }
     }
 }

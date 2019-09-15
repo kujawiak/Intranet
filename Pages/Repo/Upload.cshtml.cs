@@ -34,12 +34,15 @@ namespace Intranet.Pages.Repo
                 return Page();
             }
 
+            RepoDir mainDir = _context.RepoDir.Find(100);
+
             if (RepoFile.File.Length > 0)
             {
                 RepoFile.Version = 1;
                 RepoFile.Size = (int)RepoFile.File.Length;
                 RepoFile.Date = DateTime.Now;
                 RepoFile.GUID = Guid.NewGuid();
+                RepoFile.RepoDir = mainDir;
                 if (RepoFile.ShownName == null)
                     RepoFile.ShownName = RepoFile.File.FileName;
                 var strsplit = RepoFile.File.FileName.Split(".");
